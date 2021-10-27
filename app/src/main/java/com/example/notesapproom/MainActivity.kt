@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var btn:Button
     lateinit var et1:EditText
     var note = ""
-//    var i = 14
     lateinit var sp:SharedPreferences
     lateinit var rv:RecyclerView
 
@@ -34,13 +33,6 @@ class MainActivity : AppCompatActivity() {
         btn = findViewById(R.id.button)
         et1 = findViewById(R.id.editTextTextPersonName)
         rv =  findViewById(R.id.rv)
-//        sp = this.getSharedPreferences("mynotee", MODE_PRIVATE)
-//          var sp1 =  sp.edit()
-//        sp1 .putInt("idcounter",i)
-//        sp1   .apply()
-//        i = sp.getInt("idcounter",5)
-//        Log.d("ii","$i")
-
         not()
         btn.setOnClickListener {
             note = et1.text.toString()
@@ -58,21 +50,21 @@ class MainActivity : AppCompatActivity() {
     fun save(){
          note = et1.text.toString()
         val s = Note(null,note)
+        Log.d("ss","$s")
         CoroutineScope(Dispatchers.IO).launch {
-            NoteDatabase.getInstance(applicationContext).StudentDao().insertStudent(s)
-        }
+            NoteDatabase.getInstance(applicationContext).StudentDao().insertNote(s)}
         Toast.makeText(applicationContext, "data saved successfully! ", Toast.LENGTH_SHORT)
             .show();
         not()
         et1.text.clear()
     }
 
-    fun retrive(): MutableList<String> {
-        var notelist = mutableListOf<String>()
+    fun retrive(): MutableList<Note> {
+        var notelist = mutableListOf<Note>()
         var f = NoteDatabase.getInstance(applicationContext).StudentDao()
             .getAllUserInfo()
         for(i in 0 until f.size){
-            notelist .add(f.get(i).name)
+            notelist .add(f.get(i))
         }
         Log.d("notelist","$notelist")
         return notelist
@@ -85,14 +77,59 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun not(){
-        rv.adapter?.notifyDataSetChanged()
         rv.adapter = MyAdapter(retrive(),this)
         rv.layoutManager = LinearLayoutManager(this)
     }
+    fun preUpdate(item:Note) {
+        var txtt = EditText(this)
+        txtt.setText(item.name)
+        AlertDialog.Builder(this)
+            .setPositiveButton("Update", DialogInterface.OnClickListener { _, _ ->
+                updatde(txtt.text.toString(), item)
+            })
+            .setNegativeButton("No", DialogInterface.OnClickListener { dialog, _ ->
+                dialog.cancel()
+            })
+            .setTitle("Update Note")
+            .setView(txtt)
+            .create()
+            .show()
+    }
+    fun updatde(item:String,note:Note){
+        var rr = Note(note.id,item)
+//        CoroutineScope(Dispatchers.IO).launch {
+            NoteDatabase.getInstance(applicationContext).StudentDao().UpdateNote(rr)
+        not()
+        Toast.makeText(applicationContext, "data Updated successfully! ", Toast.LENGTH_SHORT)
+            .show();
+    }
+    fun preDelete(item:Note){
+        AlertDialog.Builder(this)
+            .setPositiveButton("delete", DialogInterface.OnClickListener{
+                    _,_ -> delete(item)
 
+            })
+            .setNegativeButton("No", DialogInterface.OnClickListener{
+                    dialog,_ -> dialog.cancel()
+            })
+            .setTitle("Delete Note?")
+            .create()
+            .show()
+    }
+    fun delete(note: Note){
+//        CoroutineScope(Dispatchers.IO).launch {
+            NoteDatabase.getInstance(applicationContext).StudentDao().DeleteNote(note)
+        Toast.makeText(applicationContext, "data deleted successfully! ", Toast.LENGTH_SHORT)
+            .show()
+        not()
 
-
+    }
 
 }
+
+
+
+
+
 
 

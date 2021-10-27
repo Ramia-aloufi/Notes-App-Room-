@@ -1,8 +1,6 @@
 package com.example.notesapproom
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface NoteDao {
@@ -11,7 +9,13 @@ interface NoteDao {
     fun getAllUserInfo(): List<Note>
 
     @Insert
-    fun insertStudent(note: Note)
+    fun insertNote(note: Note)
+
+    @Delete
+    fun DeleteNote(note: Note)
+
+    @Update
+    fun UpdateNote(note: Note)
 
 
 }

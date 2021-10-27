@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.notecell.view.*
 
-class MyAdapter(var item:MutableList<String>,var context1: MainActivity):RecyclerView.Adapter<MyAdapter.ItemViewHolder>() {
+class MyAdapter(var item:MutableList<Note>,var context1: MainActivity):RecyclerView.Adapter<MyAdapter.ItemViewHolder>() {
     class ItemViewHolder(ItemView: View):RecyclerView.ViewHolder(ItemView) {
     }
 
@@ -24,9 +24,9 @@ class MyAdapter(var item:MutableList<String>,var context1: MainActivity):Recycle
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         var items = item[position]
         holder.itemView.apply {
-            tv.text = items
-//            imageView.setOnClickListener { context1.preUpdate(items)}
-//            imageView2.setOnClickListener { context1.preDelete(items)}
+            tv.text = items.name
+            imageView.setOnClickListener { context1.preUpdate(items)}
+            imageView2.setOnClickListener { context1.preDelete(items)}
     }
     }
 
